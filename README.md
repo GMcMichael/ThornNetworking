@@ -10,6 +10,7 @@ flowchart LR
   end
   subgraph act [AcceptConnections Thread]
     direction TB
+    B-->W
     W-->X
   end
   subgraph rt [Receiving Thread]
