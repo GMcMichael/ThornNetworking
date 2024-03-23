@@ -1,3 +1,6 @@
-```
-int Test = 0;
+```mermaid
+graph TD;
+ A-->B:
+ A-->C;
+ C-->B;
 ```
