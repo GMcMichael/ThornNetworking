@@ -1,5 +1,5 @@
 ```mermaid
-flowchart TD
+flowchart LR
   subgraph mt [Main Thread]
     A([Host Start]) --> B[Open Socket on port]
     B-->C{IsConnected}
