@@ -1,5 +1,6 @@
 ```mermaid
 flowchart LR
+  mt ~~~ act ~~~ rt
   subgraph mt [Main Thread]
     direction TB
     A([Host Start])-->B[Open Socket on port]
@@ -15,5 +16,4 @@ flowchart LR
     direction TB
     y-->z
   end
-  mt ~~~ act ~~~ rt
 ```
