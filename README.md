@@ -1,6 +1,6 @@
 ```mermaid
 graph TD;
-  Host Start --> Open Socket;
+  Host Start-->Open Socket;
   A-->C;
   C-->B;
 ```
