@@ -1,8 +1,8 @@
 ```mermaid
 flowchart TB
- subgraph Hosting
-  direction LR
-  mt ~~~ act ~~~ rt
+  subgraph Hosting
+    direction LR
+    mt ~~~ act ~~~ rt
     subgraph mt [Main Thread]
       A([Host Start])-->B[Open Socket on port]
       B-->D{IsConnected}
@@ -16,5 +16,5 @@ flowchart TB
     subgraph rt [Receiving Thread]
       Y-->Z
     end
- end
+  end
 ```
