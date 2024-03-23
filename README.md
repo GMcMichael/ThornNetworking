@@ -11,4 +11,8 @@ flowchart LR
     C-- No -->D([Quit])
     C-- Yes -->E[/Send data to remote clients/]
   end
+ subgraph rt [Receiving Thread]
+  direction TB
+  y-->z
+ end
 ```
