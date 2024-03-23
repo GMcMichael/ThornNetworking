@@ -1,7 +1,7 @@
 ```mermaid
 flowchart LR
   subgraph Hosting
-    mt ~~~ act ~~~ rt
+    mt ~~~~~ act ~~~~~ rt
     subgraph mt [Main Thread]
       A([Host Start])-->B[Open Socket on port]
       B-->D{IsConnected}
