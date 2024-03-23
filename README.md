@@ -1,6 +1,7 @@
 ```mermaid
+
 graph TD;
-  'Host Start'-->'Open Socket';
+  A[(Host Start)] --> B[Open Socket on port]
   A-->C;
   C-->B;
 ```
