@@ -7,7 +7,7 @@ flowchart LR
     C-- No -->D([Quit])
     C-- Yes -->E[/Send data to remote clients/]
   end
-  subgraph acthread [AcceptConnections Thread]
+  subgraph act [AcceptConnections Thread]
     direction TB
     B-->F>Wait for incoming connection]
   end
@@ -15,4 +15,5 @@ flowchart LR
     direction TB
     y-->z
   end
+  mt ~~~ act ~~~ rt
 ```
