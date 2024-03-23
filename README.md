@@ -10,10 +10,10 @@ flowchart LR
   end
   subgraph act [AcceptConnections Thread]
     direction TB
-    C-->D
+    W-->X
   end
   subgraph rt [Receiving Thread]
     direction TB
-    E-->F
+    Y-->Z
   end
 ```
