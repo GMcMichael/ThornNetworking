@@ -29,14 +29,16 @@ flowchart
         end
         subgraph ReceivingThread [Receiving Thread]
             direction TB
-            CopyConnections[Copy RemoteConnections]:::MutexLock --> ConnectionLoop
+            CheckConnectionsUpdate{RemoteConnections Updated} -- Yes --> CopyConnections[Copy RemoteConnections]:::MutexLock --> ConnectionLoop
+            CheckConnectionsUpdate -- No --> ConnectionLoop
             h1:::hidden
             subgraph h1[" "]
-                ConnectionLoop[For each connection in copy] --> DataWait>Wait for data or timeout]:::RecieveLock --> IsTimeout{IsTimeout} -- No --> PassData[/Unmark and pass data to Main Thread/]
+                ConnectionLoop[For each connection in copy] --> IsWaiting{Marked Waiting} -- No --> DataWait>Wait for data or timeout]:::RecieveLock --> IsTimeout{IsTimeout} -- No --> PassData[/Unmark and pass data to Main Thread/]
+                IsWaiting -- Yes --- h2
                 IsTimeout -- Yes --> IsMarked{IsMarked} -- Yes --> RemoveConnection[Remove from RemoteConnections]:::MutexLock
                 IsMarked -- No --> Mark[/Mark/]
             end
-            PassData & RemoveConnection & Mark --- h2[" "]:::hidden --> CopyConnections
+            PassData & RemoveConnection & Mark --- h2[" "]:::hidden --> CheckConnectionsUpdate
         end
         subgraph SendingThread [Sending Thread]
             direction TB
