@@ -28,7 +28,7 @@ flowchart
             A3[Copy RemoteConnections]:::MutexLock --> B3
             h1:::hidden
             subgraph h1[" "]
-                B3[For each connection in copy] --> C3>Wait for data or timeout]:::RecievingLock --> D3{IsTimeout} -- No --> E3[/Unmark and pass data to Main Thread/]
+                B3[For each connection in copy] --> C3>Wait for data or timeout]:::RecieveLock --> D3{IsTimeout} -- No --> E3[/Unmark and pass data to Main Thread/]
                 D3 -- Yes --> F3{IsMarked} -- Yes --> G3[Remove from RemoteConnections]:::MutexLock
                 F3 -- No --> H3[/Mark/]
             end
