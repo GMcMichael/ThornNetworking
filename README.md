@@ -12,7 +12,7 @@ flowchart
             A1([Host Start])-->B1[Open Socket on port]
             B1--->D1{IsConnected}
             D1-- No -->E1([Quit])
-            D1-- Yes -->F1[/Send data to remote clients thorugh Sending Thread/]
+            D1-- Yes -->F1[/Send data to remote clients thorugh Sending Thread/] --> D1
             B1-->st1
             subgraph st1 [Start Threads]
                 direction TB
