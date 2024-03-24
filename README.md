@@ -1,5 +1,5 @@
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Hosting
         direction LR
         mt ~~~~~ act ~~~~~ rt
