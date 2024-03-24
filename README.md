@@ -1,29 +1,45 @@
 ```mermaid
-flowchart TB
+flowchart
     subgraph Host
         direction LR
-        mt ~~~~~ act ~~~~~ rt
+        mt ~~~~ rt ~~~ act ~~~~ st
         subgraph mt [Main Thread]
             direction TB
-            subgraph hidden1 [H1]
-                A1([Host Start])-->B1[Open Socket on port]
-                B1-->D1{IsConnected}
-                D1-- No -->E1([Quit])
-                D1-- Yes -->F1[/Send data to remote clients/]
+            A1([Host Start])-->B1[Open Socket on port]
+            B1--->D1{IsConnected}
+            D1-- No -->E1([Quit])
+            D1-- Yes -->F1[/Send data to remote clients/]
+            B1-->st1
+            subgraph st1 [Start Threads]
+                direction TB
+                G1([AcceptConnections Thread]) ~~~ H1([Receiving Thread]) ~~~ I1([Sending Thread])
             end
         end
         subgraph act [AcceptConnections Thread]
             direction TB
-            B-->W
-            W-->X
+            A2>Wait for incoming connection] --> B2[/Authorization/] --> C2[Add to RemoteConnections] --> A2
         end
         subgraph rt [Receiving Thread]
             direction TB
-            Y-->Z
+            A3[Copy RemoteConnections] --> B3
+            h1:::hidden
+            subgraph h1[" "]
+                B3[For each connection in copy] --> C3>Wait for data or timeout] --> D3{IsTimeout} -- No --> E3[/Unmark and pass data to Main Thread/]
+                D3 -- Yes --> F3{IsMarked} -- Yes --> G3[Remove from RemoteConnections]
+                F3 -- No --> H3[/Mark/]
+            end
+            E3 & G3 & H3 --- I3[" "]:::hidden --> A3
+        end
+        subgraph st [Sending Thread]
+            direction TB
+            A4{SendBuffer Empty} -- Yes --> A4
+            A4 -- No --> B4[Copy and Clear SendBuffer] --> C4[For each data object] --> D4[For each recipient]
+            D4 --> E4[/Send Data/] --> A4
         end
     end
     subgraph Client
         direction TB
         
     end
+    classDef hidden display: none;
 ```
