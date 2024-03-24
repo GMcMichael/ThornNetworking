@@ -9,36 +9,36 @@ flowchart
         mt ~~~~ rt ~~~ act ~~~~ st
         subgraph mt [Main Thread]
             direction TB
-            A1([Host Start])-->B1[Open Socket on port]
-            B1--->D1{IsConnected}
-            D1-- No -->E1([Quit])
-            D1-- Yes -->F1[/Send data to remote clients thorugh Sending Thread/] --> D1
-            B1-->st1
-            subgraph st1 [Start Threads]
+            HostStart([Host Start]) --> OpenSocket[Open Socket on port]
+            OpenSocket ---> IsConnected{IsConnected}
+            IsConnected -- No --> HostQuit([Quit])
+            IsConnected -- Yes --> HostSendData[/Send data to remote clients thorugh Sending Thread/] --> IsConnected
+            OpenSocket --> HostStartThreads
+            subgraph HostStartThreads [Start Threads]
                 direction TB
-                G1([AcceptConnections Thread]) ~~~ H1([Receiving Thread]) ~~~ I1([Sending Thread])
+                AcceptConnectionsThread([AcceptConnections Thread]) ~~~ ReceivingThread([Receiving Thread]) ~~~ SendingThread([Sending Thread])
             end
         end
-        subgraph act [AcceptConnections Thread]
+        subgraph AcceptConnectionsThread [AcceptConnections Thread]
             direction TB
-            A2>Wait for incoming connection] --> B2[/Authorization/]:::RecieveLock --> C2[Add to RemoteConnections]:::MutexLock --> A2
+            WaitConnection>Wait for incoming connection] --> Authorization[/Authorization/]:::RecieveLock --> AddConnection[Add to RemoteConnections]:::MutexLock --> WaitConnection
         end
         subgraph rt [Receiving Thread]
             direction TB
-            A3[Copy RemoteConnections]:::MutexLock --> B3
+            CopyConnections[Copy RemoteConnections]:::MutexLock --> ConnectionLoop
             h1:::hidden
             subgraph h1[" "]
-                B3[For each connection in copy] --> C3>Wait for data or timeout]:::RecieveLock --> D3{IsTimeout} -- No --> E3[/Unmark and pass data to Main Thread/]
-                D3 -- Yes --> F3{IsMarked} -- Yes --> G3[Remove from RemoteConnections]:::MutexLock
-                F3 -- No --> H3[/Mark/]
+                ConnectionLoop[For each connection in copy] --> DataWait>Wait for data or timeout]:::RecieveLock --> IsTimeout{IsTimeout} -- No --> PassData[/Unmark and pass data to Main Thread/]
+                IsTimeout -- Yes --> IsMarked{IsMarked} -- Yes --> RemoveConnection[Remove from RemoteConnections]:::MutexLock
+                IsMarked -- No --> Mark[/Mark/]
             end
-            E3 & G3 & H3 --- I3[" "]:::hidden --> A3
+            PassData & RemoveConnection & Mark --- h2[" "]:::hidden --> CopyConnections
         end
         subgraph st [Sending Thread]
             direction TB
-            A4{SendBuffer Empty} -- Yes --> A4
-            A4 -- No --> B4[Copy and Clear SendBuffer]:::MutexLOck --> C4[For each data object] --> D4[For each recipient]
-            D4 --> E4[/Send Data/]:::SendLock --> A4
+            SendBufferEmpty{SendBuffer Empty} -- Yes --> SendBufferEmpty
+            SendBufferEmpty -- No --> CopyBuffer[Copy and Clear SendBuffer]:::MutexLOck --> DataObjLoop[For each data object] --> RecipientLoop[For each recipient]
+            RecipientLoop --> SendData[/Send Data/]:::SendLock --> SendBufferEmpty
         end
     end
     subgraph Client
