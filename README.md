@@ -10,7 +10,8 @@ flowchart
     end
     subgraph Host
         direction LR
-        MainThread ~~~~ ReceivingThread ~~~ AcceptConnectionsThread ~~~~ SendingThread
+        MainThread ~~~ AcceptConnectionsThread
+        ReceivingThread ~~~  SendingThread
         subgraph MainThread [Main Thread]
             direction TB
             HostStart([Host Start]) --> OpenSocket[Open Socket on port]
