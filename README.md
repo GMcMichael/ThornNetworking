@@ -91,6 +91,7 @@ classDiagram
 class NetworkManager{
     +Instance NetworkManager
     +IsConnected bool$
+    -SendBuffer List~byte[]~$
     +StartHost()
 }
 namespace ThreadParameters {
