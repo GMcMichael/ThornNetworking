@@ -88,10 +88,22 @@ flowchart
 ```
 ```mermaid
 classDiagram
-    NetworkManager --> Host
-    NetworkManager --> Client
     class NetworkManager{
-        +Test
-        +Test2()
+        +Instance NetworkManager
+        +IsConnected bool$
+        +StartHost()
+    }
+    namespace ThreadParameters {
+        class BaseParemeters {
+            +token CancellationToken
+            +BaseParameters(CancellationToken) BaseParameters
+            +BaseParameters(BaseParameters) BaseParameters
+        }
+        class SentryParemeters {
+            +cancellationTokenSource CancellationTokenSource
+            +SentryParameters() SentryParameters
+            +SentryParameters(CancellationTokenSource) SentryParameters
+            +SentryParameters(SentryParameters) SentryParameters
+        }
     }
 ```
