@@ -13,19 +13,22 @@ flowchart
     end
     subgraph Host
         direction LR
-        HostingAcceptConnectionsThread ~~~ HostingSendingThread
-        HostingReceivingThread
-        subgraph HostingSendingThread [Sending Thread]
+        HostEntryPoint ~~~ HostingSendingThread
+        HostingAcceptConnectionsThread ~~~ HostingReceivingThread
+        subgraph HostEntryPoint [Entry Point]
             direction TB
-            HostStart([Host Start]) --> OpenSocket[Open Socket on port] --> IsConnected & HostStartThreads
-            IsConnected{IsConnected} -- Yes ---> SendBufferEmpty{SendBuffer Empty} -- Yes --> HostSendSleep>Sleep deltaTime] --> IsConnected
-            SendBufferEmpty -- No --> CopyBuffer[Copy and Clear SendBuffer]:::MutexLock --> DataObjLoop[For each data object] --> RecipientLoop[For each recipient]
-            RecipientLoop --> SendData[/Send Data/]:::SendLock --> SendBufferEmpty
-            IsConnected -- No --> HostQuit
+            HostStart([Host Start]) --> OpenSocket[Open Socket on port] --> HostStartThreads
             subgraph HostStartThreads [Start Threads]
                 direction TB
                 act([AcceptConnections Thread]) ~~~ rt([Receiving Thread]) ~~~ st([Sending Thread])
             end
+        end
+        subgraph HostingSendingThread [Sending Thread]
+            direction TB
+            IsConnected{IsConnected} -- Yes ---> SendBufferEmpty{SendBuffer Empty} -- Yes --> HostSendSleep>Sleep deltaTime] --> IsConnected
+            SendBufferEmpty -- No --> CopyBuffer[Copy and Clear SendBuffer]:::MutexLock --> DataObjLoop[For each data object] --> RecipientLoop[For each recipient]
+            RecipientLoop --> SendData[/Send Data/]:::SendLock --> SendBufferEmpty
+            IsConnected -- No --> HostQuit
             subgraph HostQuit [Quit]
                 direction TB
                 HostDisposeThreads[Displose of threads] --> HostDisposeSockets[Dispose of Sockets]
@@ -54,23 +57,20 @@ flowchart
     end
     subgraph Client
         direction TB
-        ClientSendingThread ~~~ ClientReceivingThread
-        subgraph ClientSendingThread [Sending Thread]
+        ClientSendingThread & ClientEntryPoint ~~~ ClientReceivingThread
+        subgraph ClientEntryPoint [Entry Point]
             direction TB
-            ClientStart[Client Start] --> AttemptConnection[Attempt Connection] --> ConnectionSuccess{Successful} -- No --> ClientQuit([Quit])
-            ConnectionSuccess -- Yes --> ClientAuthenticate[/Authentication/]:::SendLock
-            ClientSort:::hidden
-            subgraph ClientSort
-                ClientAuthenticate[/Authentication/]:::SendLock -- Fail --> ClientQuit
-                ClientAuthenticate --- ClientAuthSuccess[Success] --> ClientStartThreads
-                ClientAuthSuccess --> ClientConnected{Connected} -- No ---> ClientQuit
-                ClientConnected -- Yes --> ClientSendBufferEmpty{SendBuffer Empty} -- No --> ClientCopyBuffer[Copy and Clear SendBuffer]:::MutexLock --> ClientSendData[/Send Data to host/]:::SendLock  --> ClientSendBufferEmpty
-                ClientSendBufferEmpty -- Yes ---> ClientPing[/Send Ping for timeout/]:::SendLock --> ClientSendSleep>Sleep deltaTime] --> ClientConnected
-            end
+            ClientStart[(Client Start)] --> AttemptConnection[Attempt Connection] --> ClientAuthenticate[/Authentication/]:::SendLock --> ClientStartThreads
             subgraph ClientStartThreads [Start Threads]
                 direction TB
                 crt[Recieving Thread] ~~~ cst[Sending Thread]
             end
+        end
+        subgraph ClientSendingThread [Sending Thread]
+            direction TB
+            ClientConnected{Connected} -- No ---> ClientQuit([Quit])
+            ClientConnected -- Yes --> ClientSendBufferEmpty{SendBuffer Empty} -- No --> ClientCopyBuffer[Copy and Clear SendBuffer]:::MutexLock --> ClientSendData[/Send Data to host/]:::SendLock  --> ClientSendBufferEmpty
+            ClientSendBufferEmpty -- Yes ---> ClientPing[/Send Ping for timeout/]:::SendLock --> ClientSendSleep>Sleep deltaTime] --> ClientConnected
             subgraph ClientQuit [Quit]
                 direction TB
                 ClientDisposeThreads[Dispose Threads] --> ClientDisposeSocket[Dispose Socket]
@@ -88,8 +88,9 @@ flowchart
 ```
 ```mermaid
 classDiagram
-    Host --> Client
-    class Host{
+    NetworkManager --> Host
+    NetworkManager --> Client
+    class NetworkManager{
         +Test
         +Test2()
     }
