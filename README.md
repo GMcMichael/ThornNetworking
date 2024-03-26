@@ -26,7 +26,7 @@ flowchart
         subgraph HostingSendingThread [Sending Thread]
             direction TB
             IsConnected{IsConnected} -- Yes ---> SendBufferEmpty{SendBuffer Empty} -- Yes --> HostSendSleep>Sleep deltaTime] --> IsConnected
-            SendBufferEmpty -- No --> CopyBuffer[Copy and Clear SendBuffer]:::MutexLock --> DataObjLoop[For each data object] --> RecipientLoop[For each recipient]
+            SendBufferEmpty -- No --> CopyBuffer[Dequeue SendBuffer]:::MutexLock --> RecipientLoop[For each recipient]
             RecipientLoop --> SendData[/Send Data/]:::SendLock --> SendBufferEmpty
             IsConnected -- No --> HostQuit
             subgraph HostQuit [Quit]
