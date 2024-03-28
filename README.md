@@ -40,21 +40,12 @@ flowchart
             direction TB
             IsConnectedOrCancelled{Disconnected or Cancelled} -- Yes --> HostQuit
             IsConnectedOrCancelled -- No ---> CheckConnectionsUpdate{RemoteConnections Updated}
-            CheckConnectionsUpdate -- Yes --> CopyConnections[Copy RemoteConnections]:::MutexLock --> ConnectionLoop
-            CheckConnectionsUpdate -- No --> ConnectionLoop
+            CheckConnectionsUpdate -- Yes --> CopyConnections[Copy RemoteConnections]:::MutexLock --> HostReceivingNew[For each new connection] --> HostReceivingStartWait([Start Async Waiting]) --- HostReceivingHidden:::hidden
+            CheckConnectionsUpdate -- No --> HostReceivingSleep>Sleep DeltaTime] --- HostReceivingHidden --> IsConnectedOrCancelled
             subgraph HostQuit [Quit]
                 direction TB
                 HostDisposeThreads[Displose of threads] --> HostDisposeSockets[Dispose of RemoteConnections]
             end
-            h1:::hidden
-            subgraph h1
-                ConnectionLoop[For each connection in copy] --> IsWaiting{Marked Waiting} -- No --> DataWait>Wait for data or timeout]:::RecieveLock --> IsTimeout{IsTimeout} -- No --> HostUnmark[Unmark]:::MutexLock --> HostIsSyncBuffer{Is SyncBuffer} -- No --> PassData[/Raise data event/]:::DRE
-                HostIsSyncBuffer -- Yes --> HostUpdateSyncBuffer[Update SyncBuffer]:::MutexLock
-                IsWaiting -- Yes --- h2
-                IsTimeout -- Yes --> IsMarked{IsMarked} -- Yes --> RemoveConnection[Remove from RemoteConnections]:::MutexLock
-                IsMarked -- No --> Mark[Mark]:::MutexLock
-            end
-            HostUpdateSyncBuffer & PassData & RemoveConnection & Mark ---- h2:::hidden --> CheckConnectionsUpdate
         end
     end
     subgraph Client
