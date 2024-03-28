@@ -41,7 +41,7 @@ flowchart
             IsConnectedOrCancelled{Disconnected or Cancelled} -- Yes --> HostQuit
             IsConnectedOrCancelled -- No ---> CheckConnectionsUpdate{RemoteConnections Updated}
             CheckConnectionsUpdate -- Yes --> CopyConnections[Copy RemoteConnections]:::MutexLock --> HostReceivingNew[For each new connection] --> HostReceivingStartWait([Start Async Waiting]) --- HostReceivingHidden:::hidden
-            CheckConnectionsUpdate -- No --> HostReceivingSleep>Sleep DeltaTime] --- HostReceivingHidden --> IsConnectedOrCancelled
+            CheckConnectionsUpdate -- No --> HostReceivingCheckTimeout([Dispose of connection if past timeout]) --> HostReceivingSleep>Sleep DeltaTime] --- HostReceivingHidden --> IsConnectedOrCancelled
             subgraph HostQuit [Quit]
                 direction TB
                 HostDisposeThreads[Displose of threads] --> HostDisposeSockets[Dispose of RemoteConnections]
