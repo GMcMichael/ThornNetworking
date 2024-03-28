@@ -25,14 +25,11 @@ flowchart
         end
         subgraph HostingSendingThread [Sending Thread]
             direction TB
-            IsConnected{IsConnected} -- Yes ---> SendBufferEmpty{SendBuffer Empty} -- Yes --> HostSendSleep>Sleep deltaTime] --> IsConnected
+            HostSendIsCancelled{IsCancelled} -- Yes --> HostSendQuit([Quit])
+            HostSendIsCancelled -- No --> SendBufferEmpty{SendBuffer Empty}
+            SendBufferEmpty -- Yes --> HostSendSleep>Sleep deltaTime] --- HostSendHidden:::hidden
             SendBufferEmpty -- No --> CopyBuffer[Dequeue SendBuffer]:::MutexLock --> RecipientLoop[For each recipient]
-            RecipientLoop --> SendData[/Send Data/]:::SendLock --> SendBufferEmpty
-            IsConnected -- No --> HostQuit
-            subgraph HostQuit [Quit]
-                direction TB
-                HostDisposeThreads[Displose of threads] --> HostDisposeSockets[Dispose of Sockets]
-            end
+            RecipientLoop --> SendData[/Send Data/]:::SendLock --- HostSendHidden --> HostSendIsCancelled
         end
         subgraph HostingAcceptConnectionsThread [AcceptConnections Thread]
             direction TB
@@ -41,9 +38,14 @@ flowchart
         end
         subgraph HostingReceivingThread [Receiving Thread]
             direction TB
-            CheckConnectionsUpdate{RemoteConnections Updated}
+            IsConnectedOrCancelled{Disconnected or Cancelled} -- Yes --> HostQuit
+            IsConnectedOrCancelled -- No ---> CheckConnectionsUpdate{RemoteConnections Updated}
             CheckConnectionsUpdate -- Yes --> CopyConnections[Copy RemoteConnections]:::MutexLock --> ConnectionLoop
             CheckConnectionsUpdate -- No --> ConnectionLoop
+            subgraph HostQuit [Quit]
+                direction TB
+                HostDisposeThreads[Displose of threads] --> HostDisposeSockets[Dispose of RemoteConnections]
+            end
             h1:::hidden
             subgraph h1
                 ConnectionLoop[For each connection in copy] --> IsWaiting{Marked Waiting} -- No --> DataWait>Wait for data or timeout]:::RecieveLock --> IsTimeout{IsTimeout} -- No --> HostUnmark[Unmark]:::MutexLock --> HostIsSyncBuffer{Is SyncBuffer} -- No --> PassData[/Raise data event/]:::DRE
