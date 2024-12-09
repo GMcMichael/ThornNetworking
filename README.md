@@ -74,7 +74,7 @@ ReceiveFunction(data: byte[])
 <p>The receive function can be set with the following call:</p>
 
 ```C#
-NetworkManager.Instance.SetRecieveFunction(function: Action<byte[]> );
+NetworkManager.Instance.SetRecieveFunction(function: Action<byte[]>);
 ```
 
 <p>To start a host call:</p>
