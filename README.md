@@ -1,3 +1,29 @@
+<div id="doc-title" align="center">
+    <h1 align="center"> ThornNetworking </h1>
+    <span><a href="#doc-about">About</a> <a href="#doc-installation">Installation</a> <a href="#doc-documentation">Documentation</a> <a href="#doc-diagrams">Diagrams</a> </span>
+</div>
+
+<div id="doc-about">
+    <h2>About</h2>
+    <p>This repository is a personal project with the goal of becoming an easy-to-use C# Class Library networking solution with a plug-and-play style system where users can easily host or join, with a variety of connection methods, using only a few simple function calls after being added as a project depenency.
+    If it meets the usecase of whoever happens to stubmle upon it, the project is free to use as is in projects or to disect as a learning resource.
+    </p>
+</div>
+
+<div id="doc-installation">
+    <h2>Installation</h2>
+    <p></p>
+</div>
+
+<div id="doc-documentation">
+    <h2>Documentation</h2>
+    <p></p>
+</div>
+
+<div id="doc-diagrams">
+<h2>Diagrams</h2>
+<p></p>
+
 ```mermaid
 flowchart
     classDef hidden display: none;
@@ -102,3 +128,5 @@ namespace ThreadParameters {
 }
 BaseParameters <|-- SentryParameters
 ```
+
+</div>
