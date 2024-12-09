@@ -6,7 +6,7 @@
 <div id="doc-about"></div>
 <h2>About</h2>
 <p>
-This repository is a personal work-in-progress project with the goal of becoming an multithreaded and easy-to-use C# Class Library networking solution with a plug-and-play style system where users can easily host or join, with a variety of connection methods, using only a few simple function calls after being added as a project depenency.
+This repository represents a personal work-in-progress project aimed at developing a multithreaded and user-friendly C# Class Library networking solution. The solution will adopt a plug-and-play approach, enabling users to effortlessly host or join networks with diverse connection methods. Users will be able to implement these connections through a limited number of straightforward function calls after adding the library as a project dependency.
 </br>
 </br>
 If the project meets the usecase of whoever happens to stubmle upon it, it is free to use as is in projects or to dissect as a learning resource.
