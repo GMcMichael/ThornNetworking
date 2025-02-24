@@ -1,6 +1,6 @@
 <div id="doc-title"></div>
 <h1 align="center"> ThornNetworking </h1>
-<p align="center"><a href="#doc-about">About</a> <a href="#doc-installation">Installation</a> <a href="#doc-documentation">Documentation</a> <a href="#doc-diagrams">Diagrams</a> </p>
+<p align="center"><a href="#doc-about">About</a> <a href="#doc-installation">Installation</a> <a href="#doc-documentation">Documentation</a> <a href="#doc-diagrams">Diagrams</a> <a href="#license-notice">License Notice</a> </p>
 
 
 <div id="doc-about"></div>
@@ -37,7 +37,7 @@ using ThornNetworking;
 
 <div id="doc-documentation"></div>
 <h2>Documentation</h2>
-<p>The following is a simple class diagram of everything nessecary to set up hosting and connecting in a project:</p>
+<p>The following is a simple class diagram of everything necessary to set up hosting and connecting in a project:</p>
 
 ```mermaid
 classDiagram
@@ -214,3 +214,8 @@ flowchart
         end
     end
 ```
+
+<div id="license-notice"></div>
+<h2>License Notice</h2>
+<p>This project is licensed under the MIT License. You are free to use, modify, and distribute this software for any purpose, including commercial use. The only requirement is that you include the original copyright notice and give proper credit to the original author.</p></br></br>
+<p>For more details, see the <a href="https://github.com/GMcMichael/ThornNetworking/blob/main/LICENSE.txt">full license text</a>.</p>
